@@ -1,2 +1,2 @@
 From nginx:latest
-COPY . /usr/share/nginx/kpi_front
+COPY . /usr/share/nginx/html
