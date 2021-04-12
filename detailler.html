@@ -49,11 +49,11 @@
                     <canvas id="canvas"></canvas>
                 </div>
                 <div class="col">
-                    <form>
+                    <form id="myForm">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="optradio">
+                                    <input type="radio" class="form-check-input" name="optradio" id="optradio" value="out">
                                     <label class="form-check-label" for="defaultCheck2">
                                         Roaming OUT
                                     </label>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <div class="form-check">
-                                    <input type="radio" class="form-check-input" name="optradio">
+                                    <input type="radio" class="form-check-input" name="optradio" id="optradio" value="in">
                                     <label class="form-check-label" for="defaultCheck1">
                                         Roaming IN
                                     </label>
@@ -70,7 +70,7 @@
                         </div>
                         <div class="form-group">
                             <label for="inputState">Pays</label>
-                            <select id="pays" onchange="myFunction()" class="form-control">
+                            <select id="pays" class="form-control">
                               <option value="" selected>--- Selectionner ---</option>
                             </select>
                         </div>
@@ -79,8 +79,6 @@
                                 <label for="inputState">Opérateur</label>
                                 <select id="op"  class="form-control">
                                     <option value="" selected>--- Selectionner ---</option>
-                                    <option value="ORANGE">ORANGE</option>
-                                    <option value="MALITEL">MALITEL</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
@@ -159,13 +157,16 @@
 	</div>
 	
 	<script src="./assets/js/utilitaire.js"></script>
+	<script src="./assets/js/operator.js"></script>
     <script src="./assets/js/vanilla-toast.min.js"></script>
     <script src="./assets/js/html2canvas.js"></script>
     <script src="./assets/js/detailler.js"></script>
     <script src="./assets/js/moment.min.js"></script>
     <script src="./assets/js/jspdf.debug.js"></script>
 	<script>
+        
         var mixedChart = null
+        var operator_new = []
         var ctx = document.getElementById('canvas').getContext('2d');
         $('#op').prop( "disabled", true );
         
@@ -187,13 +188,24 @@
             date = this.value
         })
         $('#pays').on('change',function() {
-            console.log(this.value)
             $('#op').prop( "disabled", false );
+            listeOperateur.forEach(element => {
+                if (element.includes($('#pays').val())) {
+                    operator_new.push(element)
+                }
+            });
+            $.each(operator_new, function(index, value){
+                console.log(value)
+                $('#op').append($("<option></option>")
+                            .attr("value", value)
+                            .text(value));
+            });
+           
         })
 
 
         function myFunction (){
-            console.log($('#op').val())
+            console.log($('#op'))
         }
 
 
@@ -249,22 +261,39 @@
            
 
         $("#send").on('click',function() {
+            
+            let checkin = $('input[name=optradio]:checked', '#myForm').val() 
             let pays = $('#pays').val()
             let op = $('#op').val()
             let opcode = $('#opcode').val()
-            x = new Date($('#datepicker').val()+' '+$('#timepicker').val()).getHours();
-            y = new Date($('#datepicker').val()+' '+$('#timepicker2').val()).getHours();
-            console.log(x)
-            console.log(y)
+            console.log("op : "+ op)
+            console.log("opcode : "+ opcode)
+            var day1 = correctDateForm($('#datepicker').val(),$('#timepicker').val()) ;
+            var day2 = correctDateForm($('#datepicker2').val(),$('#timepicker2').val()) ;
+            
+            console.log("day : "+ day1)
+            console.log("days : "+ day2)
+            x = new Date($('#datepicker').val()+' '+$('#timepicker').val());
+            y = new Date($('#datepicker').val()+' '+$('#timepicker2').val());
+            //NOV 24, 2020 08:00
             console.log(Math.min(x, y))
             let testForm = validateform( $('#pays').val(), $('#op').val(), $('#opcode').val(), 
                                             $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val())
-            mixedChart.destroy();
+            
              
             if (testForm== true) {
-                vt.success("Tout est conforme");
+                //vt.success("Tout est conforme");
+                let url = defaultAPI+""+opcode+"/parametre/"
+                let data = {
+                    "roaming":checkin,
+                    "country_operator":op,
+                    "dateFin":(Math.max(x, y) == x) ? day1 : day2,
+                    "dateDebut":(Math.min(x, y) == x) ? day1 : day2
+                }
+                paramRequest(url, data)
                 // let data = makeDemand( $('#pays').val(), $('#op').val(), $('#opcode').val(), 
-                //                             $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val())
+                //                             $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val())           
+                mixedChart.destroy();
                 mixedChart = new Chart(ctx, {
                 type: 'bar',
                 data: {

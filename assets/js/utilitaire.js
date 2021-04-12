@@ -1,5 +1,5 @@
 
-const defaultAPI = "http://127.0.0.1:8000/" 
+const defaultAPI = "http://10.137.20.112:8095/" 
 //const axios = require('axios').default;
 const defaultOptions = {
     responsive: true,
@@ -47,6 +47,12 @@ var randomScalingFactor = function() {
 
 var randomEfficacity = () =>{
     return Math.floor(Math.random() * (100 - 85)) + 85;
+}
+
+var correctDateForm = (currentDay,currentTime) =>{
+    let cuurentDateTime = moment(currentDay).format("MMM DD, YYYY")+" "+currentTime;
+    let response = cuurentDateTime.split(":")
+    return response[0]+":00";
 }
 
 const validateform = (pays, operateur, operateurCode, date, hd, hf) =>{
@@ -111,3 +117,4 @@ const makeDemand = (pays, operateur, operateurCode, date, hd, hf) =>{
 const defaultData = [randomScalingFactor(), randomScalingFactor(),  randomScalingFactor(), randomScalingFactor(), 
     randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), 
     randomScalingFactor(), randomScalingFactor(),randomScalingFactor(),]
+

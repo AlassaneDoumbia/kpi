@@ -37,14 +37,37 @@ y = new Date($('#datepicker').val()+' '+$('#timepicker2').val()).getHours();
   //   console.log(json);
   // });
 
-$.getJSON(defaultAPI+"countries/", function(res){
-    console.log(res.data)
-    $.each(res.data, function(index, value){
+
+
+// $.getJSON(defaultAPI+"countries/", function(res){
+$.getJSON("https://restcountries.eu/rest/v2/all", function(res){
+    // console.log(res)
+    $.each(res, function(index, value){
         //ajouter ligne
         //ajouter cellules
+        //console.log(value)
         $('#pays').append($("<option></option>")
-                    .attr("value", value)
-                    .text(value.nom));
+                    .attr("value", value.name)
+                    .text(value.name));
     });
 });
+
+
+var paramRequest = (url, data) =>{
+  // parametresai POST
+  // roaming countrie date debut date fin
+  console.log("url : "+url)
+  console.log("data : "+data)
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    success: (success) => {
+      console.log(success)
+    },
+    dataType: "JSON"
+  });
+}
+			
+
 			
