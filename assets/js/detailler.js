@@ -1,45 +1,13 @@
 //variable
 var date= null;
-var x = 0
-var y = 0
-
+// const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 let pays = $('#pays').val()
 let op = $('#op').val()
 let opcode = $('#opcode').val()
 let = new Date($('#datepicker').val()+' '+$('#timepicker').val()).getHours();
-y = new Date($('#datepicker').val()+' '+$('#timepicker2').val()).getHours();
+let y = new Date($('#datepicker2').val()+' '+$('#timepicker2').val()).getHours();
 
 
-// axios.get(defaultAPI+"countries/")
-//   .then(function (response) {
-//     // handle success
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//   })
-//   .then(function () {
-//     // always executed
-//   });
-
-
-  // fetch(defaultAPI+"countries/",{
-  //   //mode: 'no-cors',
-  //   //credentials: 'include',
-  //   method: 'GET',
-  //   //headers: headers
-  // })
-  // .then(response => console.log(response.body))
-  // //.then(response => response.data.json())
-  // .then(json => {
-  //   // console.log(json);
-  //   console.log(json);
-  // });
-
-
-
-// $.getJSON(defaultAPI+"countries/", function(res){
 $.getJSON("https://restcountries.eu/rest/v2/all", function(res){
     // console.log(res)
     $.each(res, function(index, value){
@@ -54,20 +22,70 @@ $.getJSON("https://restcountries.eu/rest/v2/all", function(res){
 
 
 var paramRequest = (url, data) =>{
-  // parametresai POST
-  // roaming countrie date debut date fin
-  console.log("url : "+url)
-  console.log("data : "+data)
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: data,
-    success: (success) => {
-      console.log(success)
-    },
-    dataType: "JSON"
+  
+  console.log("url : "+url),
+  console.log("data : "+data),
+  fetch(url, {
+    method: 'OPTIONS',
+    Access: 'POST',
+    referrerPolicy: 'strict-origin-when-cross-origin',
+    headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Accept": "application/json",
+        },
+    body: JSON.stringify(data),
+  })
+  .then(data => {
+    console.log('Success:', data);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
   });
-}
-			
+}  
 
-			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Example POST method implementation:
+// async function postData(url = '', data = {}) {
+//   // Default options are marked with *
+//   const response = await fetch(url, {
+//     type: 'POST', // *GET, POST, PUT, DELETE, etc.
+//     mode: 'no-cors', // no-cors, *cors, same-origin
+//     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+//     credentials: 'same-origin', // include, *same-origin, omit
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Access-Control-Allow-Origin": "*",
+//       "Accept": "application/json",
+//   },
+//       // 'Content-Type': 'applica
+//     redirect: 'follow', // manual, *follow, error
+//     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+//     body: JSON.stringify(data) // body data type must match "Content-Type" header
+//     });
+//     return response.json(); // parses JSON response into 
+// }

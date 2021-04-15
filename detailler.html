@@ -85,9 +85,9 @@
                                 <label for="inputState">Operation code</label>
                                 <select id="opcode" class="form-control">
                                     <option value="" selected>--- Selectionner ---</option>
-                                    <option value="SAI">SAI</option>
-                                    <option value="LU">LU</option>
-                                    <option value="BEARER">BEARER</option>
+                                    <option value="sai">SAI</option>
+                                    <option value="pdp">PDP</option>
+                                    <option value="bearer">BEARER</option>
                                 </select>
                             </div>
                         </div>
@@ -127,11 +127,20 @@
                                 <div class="modal-body">
                                     <form class="was-validated">
                                         <div class="form-group">
+                                            <label for="validatedRoaming">Roaming: </label>
+                                            <select class="form-control"  id="validationTooltip00" required>
+                                                <option value="">---- Selectionner ----</option>
+                                                <option value="IN">IN</option>
+                                                <option value="OUT">OUT</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="validatedType">Type: </label>
                                             <select class="form-control"  id="validationTooltip01" required>
                                                 <option value="">---- Selectionner ----</option>
-                                                <option value="LU">LU</option>
-                                                <option value="BEARER">BEARER</option>
-                                                <option value="SAI">SAI</option>
+                                                <option value="lu">LU</option>
+                                                <option value="bearer">BEARER</option>
+                                                <option value="sai">SAI</option>
                                             </select>
                                         </div>
                                     
@@ -139,7 +148,7 @@
                                         <input type="file" class="custom-file-input" id="validatedCustomFile" required>
                                         <label class="custom-file-label" for="validatedCustomFile">Choisir un fichier</label>
                                         </div>
-                                        <button class="btn btn-success mt-2" type="submit">Envoyer</button>
+                                        <button class="btn btn-success mt-2" type="submit" id="fileEnvoyer">Envoyer</button>
                                     </form>
                                 </div>
                             </div>
@@ -257,7 +266,7 @@
                 
                 // download the pdf
                 pdf.save('filename.pdf');
-        });
+        });     
            
 
         $("#send").on('click',function() {
@@ -271,14 +280,17 @@
             var day1 = correctDateForm($('#datepicker').val(),$('#timepicker').val()) ;
             var day2 = correctDateForm($('#datepicker2').val(),$('#timepicker2').val()) ;
             
-            console.log("day : "+ day1)
-            console.log("days : "+ day2)
+            console.log("day1 : "+ day1)
+            console.log("day 2: "+ day2)
             x = new Date($('#datepicker').val()+' '+$('#timepicker').val());
             y = new Date($('#datepicker').val()+' '+$('#timepicker2').val());
             //NOV 24, 2020 08:00
-            console.log(Math.min(x, y))
+            // visualisation des date dans la console
+            console.log("Math.min(x, y)" + Math.min(x, y))
+            console.log("Math.max(x, y)" + Math.max(x, y))
+
             let testForm = validateform( $('#pays').val(), $('#op').val(), $('#opcode').val(), 
-                                            $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val())
+                                            $('#datepicker').val(), $('#datepicker2').val(),$('#timepicker').val(), $('#timepicker2').val())
             
              
             if (testForm== true) {
@@ -287,12 +299,22 @@
                 let data = {
                     "roaming":checkin,
                     "country_operator":op,
-                    "dateFin":(Math.max(x, y) == x) ? day1 : day2,
-                    "dateDebut":(Math.min(x, y) == x) ? day1 : day2
+                    //  Conversion des dates en secondes
+                    "dateDebut":(Math.min(x, y) == x) ? day1 : day2,
+                    "dateFin":(Math.max(x, y) == x) ? day1 : day2
+                     
+                    
+                    
                 }
                 paramRequest(url, data)
                 // let data = makeDemand( $('#pays').val(), $('#op').val(), $('#opcode').val(), 
-                //                             $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val())           
+                //                             $('#datepicker').val(), $('#timepicker').val(), $('#timepicker2').val()) 
+                // postData(url, data)
+                //     .then(data => {
+                //     console.log(data); // JSON data parsed by `data.json()` call
+                // });
+            
+
                 mixedChart.destroy();
                 mixedChart = new Chart(ctx, {
                 type: 'bar',
